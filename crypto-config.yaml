@@ -1,0 +1,55 @@
+OrdererOrgs:
+  - Name: Orderer
+    Domain: example-com
+    Specs:
+      - Hostname: orderer
+        CommonName: orderer-example-com
+      - Hostname: orderer2
+        CommonName: orderer2-example-com
+      - Hostname: orderer3
+        CommonName: orderer3-example-com
+      - Hostname: orderer4
+        CommonName: orderer4-example-com
+      - Hostname: orderer5
+        CommonName: orderer5-example-com
+
+PeerOrgs:
+  - Name: Org1
+    Domain: org1-example-com
+    EnableNodeOUs: true
+    Specs:
+      - Hostname: peer0
+        CommonName: peer0-org1-example-com
+        Port: 7051
+        PortEvent: 7053
+        ChaincodePort: 7052
+        GossipPort: 7051
+      - Hostname: peer1
+        CommonName: peer1-org1-example-com
+        Port: 7051
+        PortEvent: 7053
+        ChaincodePort: 7052
+        GossipPort: 7051
+      - Hostname: peer2
+        CommonName: peer2-org1-example-com
+        Port: 7051
+        PortEvent: 7053
+        ChaincodePort: 7052
+        GossipPort: 7051
+
+  - Name: Org2
+    Domain: org2-example-com
+    EnableNodeOUs: true
+    Specs:
+      - Hostname: peer0
+        CommonName: peer0-org2-example-com
+        Port: 7051
+        PortEvent: 7053
+        ChaincodePort: 7052
+        GossipPort: 7051
+      - Hostname: peer1
+        CommonName: peer1-org2-example-com
+        Port: 7051
+        PortEvent: 7053
+        ChaincodePort: 7052
+        GossipPort: 7051
