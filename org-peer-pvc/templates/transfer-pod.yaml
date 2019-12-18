@@ -1,0 +1,36 @@
+# This is a dummy pod created for copying
+# crypto config data into persistent volumes
+
+kind: Pod
+apiVersion: v1
+metadata:
+  name: "{{ .Values.peername }}-{{ .Values.orgname }}-injector-pod"
+  labels:
+    app: "{{ .Values.peername }}-{{ .Values.orgname }}-injector-pod"
+spec:
+  volumes:
+    - name: "{{ .Values.peername }}-{{ .Values.orgname }}-example-com-claim0"
+      persistentVolumeClaim:
+        claimName: "{{ .Values.peername }}-{{ .Values.orgname }}-example-com-claim0"
+    - name: "{{ .Values.peername }}-{{ .Values.orgname }}-example-com-claim1"
+      persistentVolumeClaim:
+        claimName: "{{ .Values.peername }}-{{ .Values.orgname }}-example-com-claim1"
+    - name: "{{ .Values.peername }}-{{ .Values.orgname }}-example-com-claim2"
+      persistentVolumeClaim:
+        claimName: "{{ .Values.peername }}-{{ .Values.orgname }}-example-com-claim2"
+    - name: "{{ .Values.peername }}-{{ .Values.orgname }}-example-com"
+      persistentVolumeClaim:
+        claimName: "{{ .Values.peername }}-{{ .Values.orgname }}-example-com"
+  containers:
+    - name: "{{ .Values.peername }}-{{ .Values.orgname }}-injector-pod"
+      image: ubuntu
+      volumeMounts:
+      - mountPath: /host/var/run/
+        name: "{{ .Values.peername }}-{{ .Values.orgname }}-example-com-claim0"
+      - mountPath: /etc/hyperledger/fabric/msp
+        name: "{{ .Values.peername }}-{{ .Values.orgname }}-example-com-claim1"
+      - mountPath: /etc/hyperledger/fabric/tls
+        name: "{{ .Values.peername }}-{{ .Values.orgname }}-example-com-claim2"
+      - mountPath: /var/hyperledger/production
+        name: "{{ .Values.peername }}-{{ .Values.orgname }}-example-com"
+      command: ["/bin/bash", "-ecx", "while :; do printf 'waiting for crypto config data to get copied...'; sleep 5 ; done"]
