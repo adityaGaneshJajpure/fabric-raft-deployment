@@ -1,0 +1,95 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.16.0 (0c01309)
+  creationTimestamp: null
+  labels:
+    service: "{{ .Values.hlfpeer.peername }}-{{ .Values.hlfpeer.orgdomain }}"
+  name: "{{ .Values.hlfpeer.peername }}-{{ .Values.hlfpeer.orgdomain }}"
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        service: "{{ .Values.hlfpeer.peername }}-{{ .Values.hlfpeer.orgdomain }}"
+    spec:
+      containers:
+      - args:
+        - peer
+        - node
+        - start
+        env:
+        - name: CORE_LEDGER_HISTORY_ENABLEHISTORYDATABASE
+          value: "{{ .Values.hlfpeer.env.CORE_LEDGER_HISTORY_ENABLEHISTORY }}"
+        - name: CORE_LOGGING_LEVEL
+          value: {{ .Values.hlfpeer.env.CORE_LOGGING_LEVEL }}
+        - name: CORE_PEER_GOSSIP_ORGLEADER
+          value:  "{{ .Values.hlfpeer.env.CORE_PEER_GOSSIP_ORGLEADER }}"
+        - name: CORE_PEER_GOSSIP_USELEADERELECTION
+          value: "{{ .Values.hlfpeer.env.CORE_PEER_GOSSIP_USELEADERELECTION }}"
+        - name: CORE_PEER_LOCALMSPID
+          value: "{{ .Values.hlfpeer.peerOrgName }}MSP"
+        - name: CORE_PEER_PROFILE_ENABLED
+          value: "{{ .Values.hlfpeer.env.CORE_PEER_PROFILE_ENABLED }}"
+        - name: CORE_PEER_TLS_CERT_FILE
+          value: {{ .Values.hlfpeer.env.CORE_PEER_TLS_CERT_FILE }}
+        - name: CORE_PEER_TLS_ENABLED
+          value: "{{ .Values.hlfpeer.env.CORE_PEER_TLS_ENABLED }}"
+        - name: CORE_PEER_TLS_KEY_FILE
+          value: {{ .Values.hlfpeer.env.CORE_PEER_TLS_KEY_FILE }}
+        - name: CORE_PEER_TLS_ROOTCERT_FILE
+          value: {{ .Values.hlfpeer.env.CORE_PEER_TLS_ROOTCERT_FILE }}
+        - name: CORE_PEER_NETWORKID
+          value: {{ .Values.hlfpeer.env.CORE_PEER_NETWORKID }}
+        - name: CORE_PEER_ADDRESSAUTODETECT
+          value: "{{ .Values.hlfpeer.env.CORE_PEER_ADDRESSAUTODETECT }}"
+        - name: GODEBUG
+          value: "{{ .Values.hlfpeer.env.GODEBUG }}"
+        - name: CORE_VM_ENDPOINT
+          value: {{ .Values.hlfpeer.env.CORE_VM_ENDPOINT }}
+        - name: CORE_PEER_CHAINCODELISTENADDRESS
+          value: {{ .Values.hlfpeer.env.CORE_PEER_CHAINCODELISTENADDRESS }}
+        - name: CORE_PEER_ADDRESS
+          value: "{{ .Values.hlfpeer.peername }}-{{ .Values.hlfpeer.orgdomain }}:7051"
+        - name: CORE_PEER_GOSSIP_BOOTSTRAP
+          value: "{{ .Values.hlfpeer.gossipPeer }}-{{ .Values.hlfpeer.orgdomain }}:7051"
+        - name: CORE_PEER_GOSSIP_EXTERNALENDPOINT
+          value: "{{ .Values.hlfpeer.peername }}-{{ .Values.hlfpeer.orgdomain }}:7051"
+        - name: CORE_PEER_ID
+          value: "{{ .Values.hlfpeer.peername }}-{{ .Values.hlfpeer.orgdomain }}"
+        image: hyperledger/fabric-peer:latest
+        name: "{{ .Values.hlfpeer.peername }}-{{ .Values.hlfpeer.orgdomain }}"
+        ports:
+        - containerPort: 7051
+        - containerPort: 7053
+        resources: {}
+        volumeMounts:
+        - mountPath: /host/var/run/
+          name: "{{ .Values.hlfpeer.peername }}-{{ .Values.hlfpeer.orgdomain }}-claim0"
+        - mountPath: /etc/hyperledger/fabric/msp
+          name: "{{ .Values.hlfpeer.peername }}-{{ .Values.hlfpeer.orgdomain }}-claim1"
+        - mountPath: /etc/hyperledger/fabric/tls
+          name: "{{ .Values.hlfpeer.peername }}-{{ .Values.hlfpeer.orgdomain }}-claim2"
+        - mountPath: /var/hyperledger/production
+          name: "{{ .Values.hlfpeer.peername }}-{{ .Values.hlfpeer.orgdomain }}"
+        workingDir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+      restartPolicy: Always
+      volumes:
+      - name: "{{ .Values.hlfpeer.peername }}-{{ .Values.hlfpeer.orgdomain }}-claim0"
+        hostPath:
+          path: /var/run/
+      - name: "{{ .Values.hlfpeer.peername }}-{{ .Values.hlfpeer.orgdomain }}-claim1"
+        persistentVolumeClaim:
+          claimName: "{{ .Values.hlfpeer.peername }}-{{ .Values.hlfpeer.orgdomain }}-claim1"
+      - name: "{{ .Values.hlfpeer.peername }}-{{ .Values.hlfpeer.orgdomain }}-claim2"
+        persistentVolumeClaim:
+          claimName: "{{ .Values.hlfpeer.peername }}-{{ .Values.hlfpeer.orgdomain }}-claim2"
+      - name: "{{ .Values.hlfpeer.peername }}-{{ .Values.hlfpeer.orgdomain }}"
+        persistentVolumeClaim:
+          claimName: "{{ .Values.hlfpeer.peername }}-{{ .Values.hlfpeer.orgdomain }}"
+status: {}
