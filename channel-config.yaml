@@ -1,0 +1,14 @@
+#This file is used for automate channel creation so fill it carefully
+
+orderer_profile: OrdererGenesis
+orderer_channel: example-sys-channel
+channel_profile: Channel
+channel_id: examplechannel
+
+#number of organizations which are part of your channel consortium
+total_organizations: 2
+
+#msp id of organizations which are part of your channel consortium
+#msp id must be same as they are in configtx.yaml
+org1_msp: Org1MSP
+org2_msp: Org2MSP
