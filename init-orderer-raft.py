@@ -58,6 +58,28 @@ def create_dir_in_pod(domain):
     time.sleep(1)
     res = os.system(pod)
 
+def generateTx():
+  with open("channel-config.yaml", 'r') as stream:
+    try:
+      config = yaml.load(stream)
+      orderer_profile = config['orderer_profile']
+      orderer_channel = config['orderer_channel']
+      channel_profile = config['channel_profile']
+      channel_id = config['channel_id']
+      create_genesis = "./bin/configtxgen -profile " + orderer_profile + " -channelID " + orderer_channel + " -outputBlock ./channel-artifacts/genesis.block"
+      create_channelTx = "./bin/configtxgen -profile " + channel_profile + " -outputCreateChannelTx ./channel-artifacts/" + channel_id + ".tx -channelID " + channel_id
+      os.system(create_genesis)
+      os.system(create_channelTx)
+      total_organizations = config['total_organizations']
+      for i in range(total_organizations):
+        org_key = "org" + str(i+1) + "_msp"
+        org_msp = config[org_key]
+        create_OrgTx = "./bin/configtxgen -profile " + channel_profile + " -outputAnchorPeersUpdate ./channel-artifacts/" + org_msp +"anchors.tx -channelID " + channel_id + " -asOrg " + org_msp      
+        os.system(create_OrgTx)
+    
+    except yaml.YAMLError as exc:
+      puts(exc)
+  return
 
 def init():
   # generate crypto-config folder if not present
@@ -70,11 +92,7 @@ def init():
     puts("Generating channel-artifacts via configtxgen tool")
     os.system("export FABRIC_CFG_PATH=$PWD")
     os.system("mkdir channel-artifacts")
-    os.system("./bin/configtxgen -profile OrdererGenesis -channelID example-sys-channel -outputBlock ./channel-artifacts/genesis.block")
-    os.system("./bin/configtxgen -profile Channel -outputCreateChannelTx ./channel-artifacts/examplechannel.tx -channelID examplechannel")    
-    os.system("./bin/configtxgen -profile Channel -outputAnchorPeersUpdate ./channel-artifacts/Org1MSPanchors.tx -channelID examplechannel -asOrg Org1MSP")
-    os.system("./bin/configtxgen -profile Channel -outputAnchorPeersUpdate ./channel-artifacts/Org2MSPanchors.tx -channelID examplechannel -asOrg Org2MSP")
-  
+    generateTx()  
   
   with open("crypto-config.yaml", 'r') as stream:
     try:
