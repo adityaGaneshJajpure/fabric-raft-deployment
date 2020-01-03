@@ -4,7 +4,7 @@ import os
 import time
 import sys
 import subprocess
-ordNamespace = sys.argv[1] if len(sys.argv) > 1 is not None else "orderers"
+ordNamespace = sys.argv[1] if len(sys.argv) > 1 is not None else "peers"
 def puts(str):
   print "\033[94m%s\033[0m" %str
   return

@@ -9,7 +9,7 @@ def puts(str):
   print "\033[94m%s\033[0m" %str
   return
 
-namespace = sys.argv[1] if len(sys.argv) > 1 is not None else "orderers"
+namespace = sys.argv[1] if len(sys.argv) > 1 is not None else "peers"
 puts("using %s as namespace ..." %namespace)
 
 def set_orderer_pvc(specs, orderer, domain):
